@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  yggdrasil:
+    build: .
+    network_mode: host
+    healthcheck:
+      test: ['CMD-SHELL', 'curl http://localhost:8080']
+      interval: 5s
+      timeout: 5s
+      retries: 10
