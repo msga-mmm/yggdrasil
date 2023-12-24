@@ -9,4 +9,6 @@ COPY src ./src
 
 EXPOSE 8080
 
+RUN ./gradlew dependencies
+
 CMD ["./gradlew", "bootRun"]
