@@ -3,10 +3,13 @@ package com.yggdrasil.core;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.LinkedList;
 import java.util.ArrayList;
 import java.io.Serializable;
 
@@ -24,6 +27,12 @@ class File implements Serializable {
 @RestController
 public class CoreApplication {
 
+  List<File> files = new LinkedList(List.of(
+    new File(1, "file-1.pdf"),
+    new File(2, "file-2.pdf"),
+    new File(3, "file-3.pdf")
+  ));
+
 	public static void main(String[] args) {
 		SpringApplication.run(CoreApplication.class, args);
 	}
@@ -34,13 +43,13 @@ public class CoreApplication {
   }
 
   @GetMapping("/files")
-  public List<File> files() {
-    List<File> files = new ArrayList<File>();
+  public List<File> listFiles() {
+    return this.files;
+  }
 
-    files.add(new File(1, "file-1.pdf"));
-    files.add(new File(2, "file-2.pdf"));
-    files.add(new File(3, "file-2.pdf"));
-
-    return files;
+  @PostMapping("/files")
+  public File createFile(@RequestBody File file) {
+    this.files.add(file);
+    return file;
   }
 }
