@@ -73,10 +73,10 @@ public class CoreApplication {
   }
 
   @PostMapping("/files")
-  public ResponseEntity<Boolean> createFile(@RequestParam("file") MultipartFile file) throws IOException {
+  public ResponseEntity<File> createFile(@RequestParam("file") MultipartFile file) throws IOException {
     File fileRecord = new File(this.files.size(), file);
     this.files.add(fileRecord);
-    return new ResponseEntity<Boolean>(true, HttpStatus.CREATED);
+    return new ResponseEntity<File>(fileRecord, HttpStatus.CREATED);
   }
 
   @DeleteMapping("/files/{id}")
