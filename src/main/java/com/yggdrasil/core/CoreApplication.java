@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.http.ResponseEntity;
@@ -50,16 +51,19 @@ public class CoreApplication {
 	}
 
   @GetMapping("/hello")
+  @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:5173"})
   public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
     return String.format("Hello %s!", name);
   }
 
   @GetMapping("/files")
+  @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:5173"})
   public List<File> listFiles() {
     return this.files;
   }
 
   @PostMapping("/files")
+  @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:5173"})
   public ResponseEntity<Boolean> createFile(@RequestParam("file") MultipartFile file) throws IOException {
     File fileRecord = new File(this.files.size(), file);
     this.files.add(fileRecord);
@@ -67,6 +71,7 @@ public class CoreApplication {
   }
 
   @DeleteMapping("/files/{id}")
+  @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:5173"})
   public ResponseEntity<Long> deleteFile(@PathVariable Long id) {
     Iterator<File> filesIterator = this.files.iterator();
 
@@ -81,6 +86,7 @@ public class CoreApplication {
   }
 
   @GetMapping("/files/{id}/download")
+  @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:5173"})
   public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) throws IOException {
     Iterator<File> filesIterator = this.files.iterator();
 
