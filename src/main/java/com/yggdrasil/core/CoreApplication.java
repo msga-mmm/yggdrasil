@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -31,6 +32,7 @@ class File implements Serializable {
   public int id;
   public String name;
   public Long size;
+  public String contentType;
 
   // @JsonSerialize(using = FileFileSerializer.class)
   transient MultipartFile file;
@@ -42,7 +44,8 @@ class File implements Serializable {
     this.file = file;
     this.name = file.getOriginalFilename();
     this.size = file.getSize();
-    this.bytes= file.getBytes();
+    this.bytes = file.getBytes();
+    this.contentType = file.getContentType();
   }
 }
 
@@ -95,16 +98,18 @@ public class CoreApplication {
   }
 
   @GetMapping("/files/{id}/download")
-  public @ResponseBody byte[] downloadFile(@PathVariable Long id) throws IOException {
+  public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) throws IOException {
     Iterator<File> filesIterator = this.files.iterator();
 
     while (filesIterator.hasNext()) {
         File file = filesIterator.next();
 
         if (file.id == id)
-            return file.bytes;
+            return ResponseEntity.ok()
+                .contentType(MediaType.valueOf(file.contentType))
+                .body(file.bytes);
     }
 
-    throw new IOException();
+    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
   }
 }
