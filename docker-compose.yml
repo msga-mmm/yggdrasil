@@ -4,6 +4,8 @@ services:
   yggdrasil:
     build: .
     network_mode: host
+    expose:
+      - 8080:8080
     healthcheck:
       test: ['CMD-SHELL', 'curl http://localhost:8080']
       interval: 5s
@@ -11,3 +13,24 @@ services:
       retries: 10
     volumes:
       - ./src:/app/src
+    depends_on:
+      - keycloak
+
+  keycloak:
+    image: quay.io/keycloak/keycloak
+    command: start-dev
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      # https://github.com/keycloak/keycloak/issues/10216
+      JAVA_OPTS_APPEND: |
+        -Dkeycloak.migration.action=import
+        -Dkeycloak.migration.provider=singleFile
+        -Dkeycloak.migration.file=/opt/keycloak/data/realm.json
+        -Dkeycloak.migration.strategy=IGNORE_EXISTING
+        -Dkeycloak.migration.replace-placeholders=true
+        -Dkeycloak.profile.feature.upload_scripts=enabled
+    volumes:
+      - ./config/realm-import.json:/opt/keycloak/data/realm.json:ro
+    ports:
+      - 8180:8080
