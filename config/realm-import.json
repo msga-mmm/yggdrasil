@@ -51,8 +51,33 @@
       {
         "name": "user_premium",
         "description": "User Premium privileges"
+      },
+      {
+        "name": "default-roles-quickstart",
+        "description": "${role_default-roles}",
+        "composite": true,
+        "composites": {
+          "realm": [
+            "offline_access",
+            "user"
+          ],
+          "client": {
+            "account": [
+              "manage-account",
+              "view-profile"
+            ]
+          }
+        },
+        "clientRole": false,
+        "attributes": {}
       }
     ]
+  },
+  "defaultRole": {
+    "name": "default-roles-quickstart",
+    "description": "${role_default-roles}",
+    "composite": true,
+    "clientRole": false
   },
   "clients": [
     {
