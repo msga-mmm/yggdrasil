@@ -4,6 +4,7 @@
   "requiredCredentials": [
     "password"
   ],
+  "registrationAllowed": true,
   "users": [
     {
       "username": "alice",
