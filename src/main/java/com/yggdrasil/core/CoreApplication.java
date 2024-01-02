@@ -55,7 +55,7 @@ class FileEntity {
   public String userID = null;
 
   @Lob
-  @Column(name = "bytes", columnDefinition="BLOB")
+  @Column(name = "bytes", columnDefinition = "BLOB")
   public byte[] bytes;
 
   public FileEntity() {
@@ -164,7 +164,10 @@ public class CoreApplication {
     return new WebMvcConfigurer() {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("http://localhost:8080", "http://localhost:5173").allowedMethods("*");
+        registry
+            .addMapping("/**")
+            .allowedOrigins("http://localhost:8080", "http://localhost:5173")
+            .allowedMethods("*");
       }
     };
   }
