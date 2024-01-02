@@ -1,4 +1,4 @@
-package com.yggdrasil.core;
+package com.yggdrasil.core.auth;
 
 import java.io.IOException;
 
@@ -56,5 +56,4 @@ public class OAuth2ResourceServerSecurityConfiguration {
 	JwtDecoder jwtDecoder() {
 		return NimbusJwtDecoder.withJwkSetUri(this.jwkSetUri).build();
 	}
-
 }
