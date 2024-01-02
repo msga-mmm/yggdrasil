@@ -34,3 +34,29 @@ services:
       - ./config/realm-import.json:/opt/keycloak/data/realm.json:ro
     ports:
       - 8180:8080
+
+  # Oracle service (label used to access the service container)
+  oracle:
+
+    # Docker Hub image (feel free to change the tag "latest" to any other available one)
+    # image: gvenzl/oracle-xe
+    image: gvenzl/oracle-free
+
+    # Provide passwords and other environment variables to container
+    environment:
+      ORACLE_PASSWORD: admin
+      # ORACLE_DATABASE: admin
+      # ORACLE_RANDOM_PASSWORD: true
+      # APP_USER: admin
+      # APP_USER_PASSWORD: admin
+
+    # Forward Oracle port
+    ports:
+      - 1521:1521
+
+    # Provide healthcheck script options for startup
+    # options: >-
+    #   --health-cmd healthcheck.sh
+    #   --health-interval 10s
+    #   --health-timeout 5s
+    #   --health-retries 10

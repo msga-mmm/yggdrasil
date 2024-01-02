@@ -50,7 +50,7 @@ public class FileController {
     FileModel fileRecord = new FileModel();
 
     fileRecord.setName(file.getOriginalFilename());
-    fileRecord.setSize(file.getSize());
+    fileRecord.setFileSize(file.getSize());
     fileRecord.setContentType(file.getContentType());
     fileRecord.setUserID(userID);
     fileRecord.setBytes(file.getBytes());

@@ -17,8 +17,8 @@ class FileModel {
   @Column(name = "name")
   public String name = null;
 
-  @Column(name = "size")
-  public Long size = null;
+  @Column(name = "file_size")
+  public Long fileSize = null;
 
   @Column(name = "content_type")
   public String contentType = null;
@@ -40,8 +40,8 @@ class FileModel {
     this.name = name;
   }
 
-  public void setSize(Long size) {
-    this.size = size;
+  public void setFileSize(Long fileSise) {
+    this.fileSize = fileSise;
   }
 
   public void setContentType(String contentType) {

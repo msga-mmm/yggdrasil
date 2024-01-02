@@ -12,7 +12,7 @@ class FilePojo implements Serializable {
   public void setDataFromFileModel(FileModel fileEntity) {
     this.id = fileEntity.id;
     this.name = fileEntity.name;
-    this.size = fileEntity.size;
+    this.size = fileEntity.fileSize;
     this.contentType = fileEntity.contentType;
     this.userID = fileEntity.userID;
   }
