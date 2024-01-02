@@ -24,11 +24,6 @@ public class FileController {
   @Autowired
   private FileService fileService;
 
-  public List<FileModel> getVisibleUserFiles(String userID) {
-    List<FileModel> visibleUserFiles = fileService.list();
-    return visibleUserFiles;
-  }
-
   @GetMapping("/files")
   public List<FilePojo> listFiles(@AuthenticationPrincipal Jwt jwt) {
     String userID = jwt.getClaimAsString("sub");
