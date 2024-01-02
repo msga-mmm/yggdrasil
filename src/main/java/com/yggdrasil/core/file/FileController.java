@@ -78,7 +78,7 @@ public class FileController {
 
   @GetMapping("/files/{id}/download")
   public ResponseEntity<byte[]> downloadFile(@PathVariable Long id,
-      @AuthenticationPrincipal Jwt jwt) throws IOException {
+      @AuthenticationPrincipal Jwt jwt) {
     String userID = jwt.getClaimAsString("sub");
     Optional<FileModel> fileEntity = fileService.findByIdAndUserID(id, userID);
 
