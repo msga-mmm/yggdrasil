@@ -1,8 +1,5 @@
 package com.yggdrasil.core;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.keycloak.KeycloakPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,9 +13,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.oidc.OidcIdToken;
-import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -30,20 +24,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
-import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Table;
-import jakarta.transaction.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.LinkedList;
-import java.util.Iterator;
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -65,9 +53,6 @@ class FileEntity {
 
   @Column(name = "user_id")
   public String userID = null;
-
-  // @Column(name = "file")
-  // public MultipartFile file;
 
   @Lob
   @Column(name = "bytes", columnDefinition="BLOB")
@@ -99,44 +84,6 @@ class FileEntity {
   public void setBytes(byte[] bytes) {
     this.bytes = bytes;
   }
-
-  // public FileEntity(
-  // Long id,
-  // String name,
-  // Long size,
-  // String contentType,
-  // String userID
-  // ) {
-  // this.id = id;
-  // this.name = name;
-  // this.size = size;
-  // this.contentType = contentType;
-  // this.userID = userID;
-  // }
-
-  // public FileEntity(Long id, MultipartFile file, String userID) throws
-  // IOException {
-  // this.id = id;
-  // this.userID = userID;
-
-  // // this.file = file;
-  // this.name = file.getOriginalFilename();
-  // this.size = file.getSize();
-  // // this.bytes = file.getBytes();
-  // this.contentType = file.getContentType();
-  // }
-
-  // public FileEntity(Long id, MultipartFile file, String userID) throws
-  // IOException {
-  // this.id = id;
-  // this.userID = userID;
-
-  // // this.file = file;
-  // this.name = file.getOriginalFilename();
-  // this.size = file.getSize();
-  // // this.bytes = file.getBytes();
-  // this.contentType = file.getContentType();
-  // }
 }
 
 class FilePojo implements Serializable {
@@ -208,9 +155,6 @@ class FileService {
 @SpringBootApplication
 @RestController
 public class CoreApplication {
-
-  List<FileEntity> files = new LinkedList<>();
-
   public static void main(String[] args) {
     SpringApplication.run(CoreApplication.class, args);
   }
@@ -226,9 +170,6 @@ public class CoreApplication {
   }
 
   public List<FileEntity> getVisibleUserFiles(String userID) {
-    // List<FileEntity> visibleUserFiles = this.files.stream().filter(file ->
-    // file.userID.equals(userID))
-    // .collect(Collectors.toList());
     List<FileEntity> visibleUserFiles = fileService.list();
     return visibleUserFiles;
   }
@@ -241,19 +182,9 @@ public class CoreApplication {
   @Autowired
   private FileService fileService;
 
-  // @PersistenceContext
-  // private EntityManager em;
-
-  // @Autowired
-  // private SessionFactory sessionFactory;
-
   @GetMapping("/files")
   public List<FilePojo> listFiles(@AuthenticationPrincipal Jwt jwt) {
     String userID = jwt.getClaimAsString("sub");
-    // List<FileEntity> visibleUserFiles = this.getVisibleUserFiles(userID);
-    // List<FileEntity> visibleUserFiles = fileRepository.findAll();
-    // List<FileEntity> visibleUserFiles = fileService.list();
-
     List<FileEntity> visibleUserFiles = fileService.findAllByUserID(userID);
     List<FilePojo> files = visibleUserFiles.stream().map(fileEntity -> {
       FilePojo filePojo = new FilePojo();
@@ -269,38 +200,15 @@ public class CoreApplication {
       @AuthenticationPrincipal Jwt jwt)
       throws IOException {
     String userID = jwt.getClaimAsString("sub");
-    // FileEntity fileRecord = new FileEntity((long) this.files.size(), file,
-    // userID);
-    // FileEntity fileRecord = new FileEntity(
-    // (long) this.files.size(),
-    // file.getOriginalFilename(),
-    // file.getSize(),
-    // file.getContentType(),
-    // userID);
-
     FileEntity fileRecord = new FileEntity();
 
-    // fileRecord.setID((long) this.files.size());
     fileRecord.setName(file.getOriginalFilename());
     fileRecord.setSize(file.getSize());
     fileRecord.setContentType(file.getContentType());
     fileRecord.setUserID(userID);
     fileRecord.setBytes(file.getBytes());
 
-    // Session session = sessionFactory.openSession();
-    // // Session session = sessionFactory.getCurrentSession();
-    // //start transaction
-    // session.beginTransaction();
-    // //Save the Model object
-    // session.save(fileRecord);
-    // //Commit transaction
-    // session.getTransaction().commit();
-
-    // //terminate session factory, otherwise program won't end
-    // session.close();
-
     fileService.save(fileRecord);
-    // this.files.add(fileRecord);
 
     FilePojo filePojo = new FilePojo();
     filePojo.setDataFromFileEntity(fileRecord);
@@ -311,19 +219,6 @@ public class CoreApplication {
   @DeleteMapping("/files/{id}")
   public ResponseEntity<Long> deleteFile(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) {
     String userID = jwt.getClaimAsString("sub");
-    // Iterator<FileEntity> filesIterator = this.files.iterator();
-
-    // while (filesIterator.hasNext()) {
-    // FileEntity file = filesIterator.next();
-
-    // if (file.id == id && file.userID.equals(userID)) {
-    // filesIterator.remove();
-    // return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    // }
-    // }
-
-    // return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
     Optional<FileEntity> fileEntity = fileService.findByIdAndUserID(id, userID);
 
     if (fileEntity.isEmpty()) {
@@ -338,18 +233,6 @@ public class CoreApplication {
   public ResponseEntity<byte[]> downloadFile(@PathVariable Long id,
       @AuthenticationPrincipal Jwt jwt) throws IOException {
     String userID = jwt.getClaimAsString("sub");
-    // List<FileEntity> visibleUserFiles = this.getVisibleUserFiles(userID);
-    // Iterator<FileEntity> filesIterator = visibleUserFiles.iterator();
-
-    // while (filesIterator.hasNext()) {
-    // FileEntity file = filesIterator.next();
-
-    // if (file.id == id)
-    // return ResponseEntity.ok()
-    // .contentType(MediaType.valueOf(file.contentType))
-    // .body(file.bytes);
-    // }
-
     Optional<FileEntity> fileEntity = fileService.findByIdAndUserID(id, userID);
 
     if (fileEntity.isEmpty()) {
