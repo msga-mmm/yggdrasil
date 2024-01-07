@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,10 +23,8 @@ public class FileController {
   private FileService fileService;
 
   @GetMapping("/files")
-  public List<FilePojo> listFiles(@AuthenticationPrincipal Jwt jwt) {
-    String userID = jwt.getClaimAsString("sub");
-    List<FileModel> visibleUserFiles = fileService.findAllByUserID(userID);
-    List<FilePojo> files = visibleUserFiles.stream().map(fileEntity -> {
+  public List<FilePojo> listFiles() {
+    List<FilePojo> files = fileService.list().stream().map(fileEntity -> {
       FilePojo filePojo = new FilePojo();
       filePojo.setDataFromFileModel(fileEntity);
       return filePojo;
@@ -38,10 +34,9 @@ public class FileController {
   }
 
   @PostMapping("/files")
-  public ResponseEntity<FilePojo> createFile(@RequestParam("file") MultipartFile file,
-      @AuthenticationPrincipal Jwt jwt)
+  public ResponseEntity<FilePojo> createFile(@RequestParam("file") MultipartFile file)
       throws IOException {
-    String userID = jwt.getClaimAsString("sub");
+    String userID = fileService.getUserID();
     FileModel fileRecord = new FileModel();
 
     fileRecord.setName(file.getOriginalFilename());
@@ -59,9 +54,8 @@ public class FileController {
   }
 
   @DeleteMapping("/files/{id}")
-  public ResponseEntity<Long> deleteFile(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) {
-    String userID = jwt.getClaimAsString("sub");
-    Optional<FileModel> fileEntity = fileService.findByIdAndUserID(id, userID);
+  public ResponseEntity<Long> deleteFile(@PathVariable Long id) {
+    Optional<FileModel> fileEntity = fileService.findById(id);
 
     if (fileEntity.isEmpty()) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -72,10 +66,8 @@ public class FileController {
   }
 
   @GetMapping("/files/{id}/download")
-  public ResponseEntity<byte[]> downloadFile(@PathVariable Long id,
-      @AuthenticationPrincipal Jwt jwt) {
-    String userID = jwt.getClaimAsString("sub");
-    Optional<FileModel> fileEntity = fileService.findByIdAndUserID(id, userID);
+  public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) {
+    Optional<FileModel> fileEntity = fileService.findById(id);
 
     if (fileEntity.isEmpty()) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);

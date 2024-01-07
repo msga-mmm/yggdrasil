@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,12 +18,30 @@ public class FileService {
     return fileRepository.save(fileEntity);
   }
 
+  public Jwt getJwt() {
+    Jwt jwt = null;
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    if (authentication != null) {
+      jwt = ((Jwt) authentication.getPrincipal());
+    }
+
+    return jwt;
+  }
+
+  public String getUserID() {
+    return getJwt().getClaimAsString("sub");
+  }
+
   public List<FileModel> list() {
-    return fileRepository.findAll();
+    String userID = getUserID();
+    return fileRepository.findAllByUserID(userID);
   }
 
   public Optional<FileModel> findById(Long id) {
-    return fileRepository.findById(id);
+    String userID = getUserID();
+    return fileRepository.findByIdAndUserID(id, userID);
   }
 
   public void delete(FileModel fileEntity) {
