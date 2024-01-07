@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 
 @Entity
@@ -26,8 +25,7 @@ class FileModel {
   @Column(name = "user_id")
   public String userID = null;
 
-  @Lob
-  @Column(name = "bytes", columnDefinition = "BLOB")
+  @Column(name = "bytes", columnDefinition = "bytea")
   public byte[] bytes;
 
   public FileModel() {}
