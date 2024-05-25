@@ -24,7 +24,6 @@ jobs:
           images: |
             name=ghcr.io/msga-mmm/yggdrasil
           tags: |
-            type=raw,value=dev-{{branch}}-{{sha}}
             type=schedule,pattern={{date 'YYYYMMDD-hhmmss'}}
 
       - name: Login to GitHub Container Registry
