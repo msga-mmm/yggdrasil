@@ -12,6 +12,8 @@ on:
 jobs:
   login:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - uses: actions/checkout@v4
 
@@ -20,6 +22,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/msga-mmm/yggdrasil:latest
+          tags: ghcr.io/msga-mmm/yggdrasil:dev-${{ github.sha }}
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
