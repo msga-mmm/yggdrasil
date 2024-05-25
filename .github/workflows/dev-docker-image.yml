@@ -24,9 +24,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set BRANCH_NAME variable
+        run: |
+          # Replace slashes with dashes in the branch name
+          branch=${GITHUB_REF##*/}
+          echo "branch=${branch}" >> $GITHUB_ENV
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ghcr.io/msga-mmm/yggdrasil:latest
+          tags: ghcr.io/msga-mmm/yggdrasil:${{ env.branch }}-${{ github.sha }}
