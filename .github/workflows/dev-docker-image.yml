@@ -22,6 +22,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
+            name=msga-mmm/yggdrasil
             name=ghcr.io/msga-mmm/yggdrasil
           tags: |
             type=raw,value=dev-${{ github.head_ref }}-{{sha}}
