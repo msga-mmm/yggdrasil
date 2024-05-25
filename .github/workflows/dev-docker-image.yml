@@ -1,0 +1,22 @@
+name: Build and push a branch image to ghcr
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  login:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/msga-mmm/yggdrasil:latest
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
