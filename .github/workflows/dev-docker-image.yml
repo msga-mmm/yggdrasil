@@ -25,7 +25,6 @@ jobs:
             name=ghcr.io/msga-mmm/yggdrasil
           tags: |
             type=schedule,pattern=type=schedule,pattern={{date 'YYYYMMDD-hhmmss'}}
-            type=sha
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
