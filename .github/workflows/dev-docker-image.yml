@@ -22,8 +22,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            msga-mmm/yggdrasil
-            ghcr.io/msga-mmm/yggdrasil
+            name=ghcr.io/msga-mmm/yggdrasil
           tags: |
             type=schedule,pattern=type=schedule,pattern={{date 'YYYYMMDD-hhmmss'}}
             type=sha
