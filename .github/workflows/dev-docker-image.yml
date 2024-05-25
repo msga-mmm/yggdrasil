@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  login:
+  build-and-push:
     runs-on: ubuntu-latest
     permissions:
       packages: write
