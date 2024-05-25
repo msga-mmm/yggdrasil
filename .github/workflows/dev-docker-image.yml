@@ -14,15 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       packages: write
-      contents: read
     steps:
       - uses: actions/checkout@v4
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: msga-mmm/yggdrasil
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -36,5 +29,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ghcr.io/msga-mmm/yggdrasil:latest
